@@ -1,3 +1,7 @@
+/*
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -14,7 +18,6 @@ int main(int _argc,char **_argv) {
   int x, y;
   int bx, by; // Position inside the block
   int fx, fy; // Position inside the frame
-  int row; // Current row
 
   // Open Y4M
   FILE *fin = fopen(_argv[1], "rb");
