@@ -109,7 +109,7 @@ int main(int _argc,char **_argv) {
       // Bottom right
       dct(&dct_block[bottom_right], big_block_size, &block[bottom_right], big_block_size);
 
-      // Perform TF on the 4 transformed blocks
+      // TF merge 4 blocks (a big_block) into 1 block
       od_tf_up_hv_lp(tf_block, block_size, dct_block, big_block_size,
 		      block_size, block_size, block_size);
 

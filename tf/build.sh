@@ -34,6 +34,6 @@ convert -comment 'daala 32x32'  daala_tf_32.png  daala_tf_32.png
 #echo ================ PSNR:
 #$DAALA/tools/dump_psnr aom_tf.y4m daala_tf.y4m
 
-montage -font "DejaVu-Sans-Bold" -geometry 640x480 -tile 2x4 -title "AOM TF vs Daala TF" -label '%c' aom_tf_4.png daala_tf_4.png aom_tf_8.png daala_tf_8.png aom_tf_16.png daala_tf_16.png aom_tf_32.png daala_tf_32.png sidebyside.png
+montage -font "DejaVu-Sans-Bold" -pointsize 36 -geometry 640x480 -tile 2x4 -title "AOM TF vs Daala TF" -label '%c' aom_tf_4.png daala_tf_4.png aom_tf_8.png daala_tf_8.png aom_tf_16.png daala_tf_16.png aom_tf_32.png daala_tf_32.png sidebyside.png
 
 gpicview sidebyside.png
