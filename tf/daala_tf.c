@@ -18,6 +18,12 @@ int main(int _argc,char **_argv) {
   int bx, by; // Position inside the block
   int fx, fy; // Position inside the frame
 
+  if (_argc != 3) {
+    fprintf(stderr, "Invalid number of arguments!\n");
+    fprintf(stderr, "usage: image.y4m blocksize\n");
+    return -1;
+  }
+
   // Open Y4M
   FILE *fin = fopen(_argv[1], "rb");
   video_input vid;
@@ -35,7 +41,7 @@ int main(int _argc,char **_argv) {
   const int out_height = height >> 1;
   const int out_image_square = out_height * out_width;
 
-  const int block_size = 8;
+  const int block_size = atoi(_argv[2]);
   const int block_square = block_size * block_size;
   const int big_block_size = block_size << 1;
   const int big_block_square = big_block_size * big_block_size;
@@ -53,6 +59,34 @@ int main(int _argc,char **_argv) {
   // Final pixel block
   uint8_t *out = (uint8_t*) calloc(out_image_square, sizeof(uint8_t));
 
+  // DCT function
+  void (*dct)(od_coeff*, int, const od_coeff*, int);
+  void (*idct)(od_coeff*, int, const od_coeff*, int);
+
+  switch (block_size)
+  {
+    case 4:
+      dct = &od_bin_fdct4x4;
+      idct = &od_bin_idct4x4;
+      break;
+    case 8:
+      dct = &od_bin_fdct8x8;
+      idct = &od_bin_idct8x8;
+      break;
+    case 16:
+      dct = &od_bin_fdct16x16;
+      idct = &od_bin_idct16x16;
+      break;
+    case 32:
+      dct = &od_bin_fdct32x32;
+      idct = &od_bin_idct32x32;
+      break;
+    default:
+      fprintf(stderr, "Invalid block size\n");
+      fprintf(stderr, "Values are: 4, 8, 16, 32\n");
+      return -1;
+  }
+
   for (y = 0; y < height; y += big_block_size) {
     for (x = 0; x < width; x +=  big_block_size) {
 
@@ -67,16 +101,13 @@ int main(int _argc,char **_argv) {
 
       // DCT Transform the 32 bit block coeffs
       // Top left
-      od_bin_fdct8x8(dct_block, big_block_size, block, big_block_size);
+      dct(dct_block, big_block_size, block, big_block_size);
       // Top right
-      od_bin_fdct8x8(&dct_block[block_size], big_block_size,
-		     &block[block_size], big_block_size);
+      dct(&dct_block[block_size], big_block_size, &block[block_size], big_block_size);
       // Bottom left
-      od_bin_fdct8x8(&dct_block[bottom_left], big_block_size,
-		     &block[bottom_left], big_block_size);
+      dct(&dct_block[bottom_left], big_block_size, &block[bottom_left], big_block_size);
       // Bottom right
-      od_bin_fdct8x8(&dct_block[bottom_right], big_block_size,
-		     &block[bottom_right], big_block_size);
+      dct(&dct_block[bottom_right], big_block_size, &block[bottom_right], big_block_size);
 
       // Perform TF on the 4 transformed blocks
       od_tf_up_hv_lp(tf_block, block_size, dct_block, big_block_size,
@@ -91,7 +122,7 @@ int main(int _argc,char **_argv) {
       }
 
       // Inverse transform the TF block
-      od_bin_idct8x8(idct_block, block_size, tf_block, block_size);
+      idct(idct_block, block_size, tf_block, block_size);
 
       for (by = 0; by < block_size; by++) {
 	fy = by + (y >> 1);
@@ -109,7 +140,10 @@ int main(int _argc,char **_argv) {
     }
   }
 
-  luma2png("daala_tf.png", out, out_width, out_height);
+  char* out_filename;
+  asprintf(&out_filename, "daala_tf_%d.png", block_size);
+  luma2png(out_filename, out, out_width, out_height);
+  free(out_filename);
 
   free(block);
   free(dct_block);

@@ -7,8 +7,7 @@
 #include <string.h>
 
 #include "vidinput.h"
-#include "aom_dsp/fwd_txfm.h"
-#include "aom_dsp/inv_txfm.h"
+#include "./aom_dsp_rtcd.h"
 
 #include "utils/luma2png.h"
 
@@ -18,6 +17,12 @@ int main(int _argc,char **_argv) {
   int x,y;
   int bx,by; // Position inside the block
   int fx,fy; // Position inside frame
+
+  if (_argc != 3) {
+    fprintf(stderr, "Invalid number of arguments!\n");
+    fprintf(stderr, "usage: image.y4m blocksize\n");
+    return -1;
+  }
 
   // Open Y4M
   FILE *fin = fopen(_argv[1], "rb");
@@ -36,7 +41,7 @@ int main(int _argc,char **_argv) {
   const int out_height = height >> 1;
   const int out_image_square = out_height * out_width;
 
-  const int block_size = 8;
+  const int block_size = atoi(_argv[2]);
   const int block_square = block_size * block_size;
   const int big_block_size = block_size << 1;
   const int big_block_square = big_block_size * big_block_size;
@@ -62,6 +67,32 @@ int main(int _argc,char **_argv) {
   uint8_t *out = (uint8_t*) calloc(out_image_square,
 		  sizeof(uint8_t));
 
+  void (*dct)(const int16_t*, tran_low_t*, int);
+  void (*idct)(const tran_low_t*, uint8_t *, int);
+
+  switch (block_size)
+  {
+    case 4:
+      dct = &aom_fdct4x4_c;
+      idct = &aom_idct4x4_16_add_c;
+      break;
+    case 8:
+      dct = &aom_fdct8x8_c;
+      idct = &aom_idct8x8_64_add_c;
+      break;
+    case 16:
+      dct = &aom_fdct16x16_c;
+      idct = &aom_idct16x16_256_add_c;
+      break;
+    case 32:
+      dct = &aom_fdct32x32_c;
+      idct = &aom_idct32x32_1024_add_c;
+      break;
+    default:
+      fprintf(stderr, "Invalid block size\n");
+      fprintf(stderr, "Values are: 4, 8, 16, 32\n");
+      return -1;
+  }
   for (y = 0; y < height; y += big_block_size) {
     for (x = 0; x < width; x +=  big_block_size) {
 
@@ -76,7 +107,7 @@ int main(int _argc,char **_argv) {
 
       // DCT Transform the 16 bit block coeffs
       // Top left
-      aom_fdct8x8_c(block, dct_block, big_block_size);
+      dct(block, dct_block, big_block_size);
       for (by = 0; by < block_size; by++) {
         for (bx = 0; bx < block_size; bx++) {
           dct_big_block[by * big_block_size + bx]
@@ -85,7 +116,7 @@ int main(int _argc,char **_argv) {
       }
 
       // Top right
-      aom_fdct8x8_c(&block[block_size], dct_block, big_block_size);
+      dct(&block[block_size], dct_block, big_block_size);
       for (by = 0; by < block_size; by++) {
         for (bx = 0; bx < block_size; bx++) {
           dct_big_block[by * big_block_size + bx + block_size]
@@ -93,7 +124,7 @@ int main(int _argc,char **_argv) {
 	}
       }
       // Bottom left
-      aom_fdct8x8_c(&block[bottom_left], dct_block, big_block_size);
+      dct(&block[bottom_left], dct_block, big_block_size);
       for (by = 0; by < block_size; by++) {
         for (bx = 0; bx < block_size; bx++) {
           dct_big_block[bottom_left + by * big_block_size + bx]
@@ -101,19 +132,19 @@ int main(int _argc,char **_argv) {
 	}
       }
       // Bottom right
-      aom_fdct8x8_c(&block[bottom_right], dct_block, big_block_size);
+      dct(&block[bottom_right], dct_block, big_block_size);
       for (by = 0; by < block_size; by++) {
         for (bx = 0; bx < block_size; bx++) {
           dct_big_block[bottom_right + by * big_block_size + bx]
 		  = dct_block[by * block_size + bx];
 	}
       }
-      // TF merge 4 8x8 into a 16x16
+      // TF merge 4 blocks (a big_block) into 1 block
       od_tf_up_hv_lp(tf_block, block_size, dct_big_block, big_block_size,
 		      block_size, block_size, block_size);
 
       memset(idct_block, 0, sizeof(uint8_t) * block_square);
-      aom_idct8x8_64_add_c(tf_block, idct_block, block_size);
+      idct(tf_block, idct_block, block_size);
 
       for (by = 0; by < block_size; by++) {
 	fy = by + (y >> 1);
@@ -127,7 +158,10 @@ int main(int _argc,char **_argv) {
     }
   }
 
-  luma2png("aom_tf.png", out, out_width, out_height);
+  char* out_filename;
+  asprintf(&out_filename, "aom_tf_%d.png", block_size);
+  luma2png(out_filename, out, out_width, out_height);
+  free(out_filename);
 
   free(block);
   free(dct_block);
