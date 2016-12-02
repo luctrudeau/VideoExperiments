@@ -8,7 +8,7 @@ Given an image and a block size of NxN, split the image into NxN blocks and tran
 
 ## Results
 
-![Experimental Results](ttps://raw.githubusercontent.com/luctrudeau/VideoExperiments/master/tf/sidebyside.png)
+![Experimental Results](https://raw.githubusercontent.com/luctrudeau/VideoExperiments/master/tf/sidebyside.png)
 
 ## Observation
 
