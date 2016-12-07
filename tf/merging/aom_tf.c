@@ -8,6 +8,8 @@
 
 #include "vidinput.h"
 #include "./aom_dsp_rtcd.h"
+#include "av1/common/cfl.h"
+
 
 #include "utils/luma2png.h"
 
@@ -57,8 +59,11 @@ int main(int _argc,char **_argv) {
   // Holds 4 transformed blocks
   tran_low_t *dct_big_block = (tran_low_t*) calloc(big_block_square,
 		  sizeof(tran_low_t));
-  // TF block
-  tran_low_t *tf_block = (tran_low_t*) calloc(block_square,
+  // TF block (TF requires more bits for bigger transforms)
+  tran_high_t *tf_block = (tran_high_t*) calloc(block_square,
+		  sizeof(tran_high_t));
+  // TF block scaled
+  tran_low_t *tf_block_scaled = (tran_low_t*) calloc(block_square,
 		  sizeof(tran_low_t));
   // Inverse transformed block
   uint8_t *idct_block = (uint8_t*) calloc(block_square,
@@ -143,8 +148,15 @@ int main(int _argc,char **_argv) {
       od_tf_up_hv_lp(tf_block, block_size, dct_big_block, big_block_size,
 		      block_size, block_size, block_size);
 
+      // Subsampling requires scaling
+      for (by = 0; by < block_size; by++) {
+        for (bx = 0; bx < block_size; bx++) {
+	  tf_block_scaled[by * block_size + bx] = tf_block[by * block_size + bx] >> 1;
+	}
+      }
+
       memset(idct_block, 0, sizeof(uint8_t) * block_square);
-      idct(tf_block, idct_block, block_size);
+      idct(tf_block_scaled, idct_block, block_size);
 
       for (by = 0; by < block_size; by++) {
 	fy = by + (y >> 1);

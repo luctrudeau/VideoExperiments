@@ -12,10 +12,11 @@ Given an image and a block size of NxN, split the image into NxN blocks and tran
 
 ## Observation
 
+  * Because of subsampling, the inverse transform is half the size of the forward transform, scaling is required to avoid this.
   * As TF is an approximation, it introduces artifacts.
     * These artifacts are less visible when block sizes are smaller.
     * Although the noise is similar it is not identical (Because the transform are different).
-  * Daala requires scaling, while AV1 does not...
+  * The transform coefficients in AV1 are stored in 16 bits. However, TF requires 32 bits for bigger transforms. This must be managed to avoid over flow ints.
 
 ## Future work
 

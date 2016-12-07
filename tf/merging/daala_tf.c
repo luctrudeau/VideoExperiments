@@ -4,6 +4,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "dct.h"
 #include "vidinput.h"
@@ -113,8 +114,7 @@ int main(int _argc,char **_argv) {
       od_tf_up_hv_lp(tf_block, block_size, dct_block, big_block_size,
 		      block_size, block_size, block_size);
 
-      // Daala requires scaling the TF by half because its transforms are unit
-      // scale.
+      // Subsampling requires scaling
       for (by = 0; by < block_size; by++) {
         for (bx = 0; bx < block_size; bx++) {
 	  tf_block[by * block_size + bx] >>= 1;
