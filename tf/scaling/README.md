@@ -10,7 +10,8 @@ Given a flat block of size NxN, Apply the DCT to it four different times, in ord
 
 ### 4x4 Daala
 
-Pixel Values
+#### Pixel Values
+
 |   |   |   |   |
 | --- | --- | --- | --- |
 | 127 | 127 | 127 | 127 |
@@ -18,7 +19,8 @@ Pixel Values
 | 127 | 127 | 127 | 127 |
 | 127 | 127 | 127 | 127 |
 
-Transformed Coefficients
+#### Transformed Coefficients
+
 |   |   |   |   |   |   |   |   |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 508 | 0 | 0 | 0 | 508 | 0 | 0 | 0 |
@@ -30,7 +32,8 @@ Transformed Coefficients
 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-TF
+#### TF
+
 |   |   |   |   |
 | --- | --- | --- | --- |
 | 1016 | 0 | 0 | 0 |
