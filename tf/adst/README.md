@@ -11,7 +11,7 @@ Given the following image:
 ![Reference Image](https://github.com/luctrudeau/VideoExperiments/raw/master/videos/owl.png)
 
 Split the image into NxN blocks and perform a forward transform on the block.
-Apply a TF merge on all 2Nx2N block quartets.Apply an 2Nx2N inverse transform
+Apply a TF merge on all 2Nx2N block quartets. Apply an 2Nx2N inverse transform
 on the resulting block and reassemble the image.
 
 ## Results
@@ -21,13 +21,14 @@ on the resulting block and reassemble the image.
 ## Observations
 
   * The TF and the ADST are not compatible.
-  * Using the DCT as the inverse transform appears to be less noisy.
+  * The visible dark grids might imply that the lower frequency are zeroed out.
   * The visual degradation is very similar in multiple blocks, it might be
     possible to remove it.
+    * Lower frequency appear to be darker and higher frequency lighter.
   * For ADST -> TF -> ADST ripples are visible from the DC outwards.
 
 In the context of CfL, it might be favorable to perform an operation that would
 convert the ADST into an approximation of the DCT. According to jmspeex, the
 properties of the ADST are not wanted on for the Chroma plane during CfL (i.e.
-CfL might not produce a residual with a geomtric offset, in which case the DCT
+CfL might not produce a residual with a geometric offset, in which case the DCT
 is a better transform).
