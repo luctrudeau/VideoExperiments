@@ -96,6 +96,7 @@ int main(int _argc,char **_argv) {
 
   // Open Y4M
   FILE *fin = fopen(_argv[1], "rb");
+  printf("Opening %s Block size %dx%d\n", _argv[1], atoi(_argv[2]), atoi(_argv[2]));
   video_input vid;
   video_input_info info;
   video_input_open(&vid,fin);
