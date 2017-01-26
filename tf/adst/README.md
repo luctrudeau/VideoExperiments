@@ -32,3 +32,7 @@ convert the ADST into an approximation of the DCT. According to jmspeex, the
 properties of the ADST are not wanted on for the Chroma plane during CfL (i.e.
 CfL might not produce a residual with a geometric offset, in which case the DCT
 is a better transform).
+
+## Future work
+
+  * Investigate approaches that would allow to TF merge ADST blocks.
