@@ -21,4 +21,4 @@ Given an image and a block size of NxN, split the image into NxN blocks and tran
 ## Future work
 
   * Add support for two-stage TF Merge
-  * Include ADST to experiment
+  * [Investigate TF and the ADST](https://github.com/luctrudeau/VideoExperiments/tree/master/tf/adst)
