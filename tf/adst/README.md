@@ -8,4 +8,12 @@ be TF-merged into a 2Nx2N ADST block.
 
 Given the following image:
 
-![https://github.com/luctrudeau/VideoExperiments/raw/master/videos/owl.png](Reference image)
+![Reference Image](https://github.com/luctrudeau/VideoExperiments/raw/master/videos/owl.png)
+
+Split the image into NxN blocks and perform a forward transform on the block. Apply a TF merge on all 2Nx2N block quartets.Apply an 2Nx2N inverse transform on the resulting block and reassemble the image.
+
+## Results
+
+![Results](https://github.com/luctrudeau/VideoExperiments/raw/master/tf/adst/sidebyside.png)
+
+
