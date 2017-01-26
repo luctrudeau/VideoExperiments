@@ -1,6 +1,6 @@
 # DCT Scaling in Daala and in AV1 for Flat blocks
 
-In this experiment, we compare the DCT of Daala and the one of AV1 for flat blocks. Afterward, apply TF to each.
+In this experiment, we compare the DCT of Daala and the one of AV1 for flat blocks. Afterward, we apply TF to each.
 
 ## Experiment
 

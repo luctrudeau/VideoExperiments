@@ -49,7 +49,7 @@ int main(int _argc,char **_argv) {
   printf("\n");
 
   od_coeff *dct_block = (od_coeff*) calloc(big_block_square, sizeof(od_coeff));
-   
+
   // DCT function
   void (*dct)(od_coeff*, int, const od_coeff*, int);
   void (*idct)(od_coeff*, int, const od_coeff*, int);
@@ -90,11 +90,18 @@ int main(int _argc,char **_argv) {
   // TF merge 4 blocks (a big_block) into 1 block
   od_tf_up_hv_lp(tf_block, block_size, dct_block, big_block_size,
 		      block_size, block_size, block_size);
-  
   printf("TF\n");
   print_block(tf_block, block_size);
   printf("\n");
 
+  od_coeff *out = (od_coeff*) calloc(block_square, sizeof(od_coeff));
+  idct(out, block_size, tf_block, block_size);
+  printf("Reconstructed Pixels\n");
+  print_block(out, block_size);
+  printf("\n");
+  
   free(block);
   free(dct_block);
+  free(tf_block);
+  free(out);
 }

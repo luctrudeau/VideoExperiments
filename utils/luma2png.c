@@ -52,4 +52,6 @@ void luma2png(char *filename, const uint8_t *const luma, int width, int height) 
   free(row_pointers);
 
   fclose(fp);
+  png_free_data(png, info, PNG_FREE_ALL, -1);
+  png_destroy_write_struct(&png, &info);
 }

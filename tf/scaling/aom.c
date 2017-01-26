@@ -123,10 +123,25 @@ int main(int _argc,char **_argv) {
   print_block(dct_big_block, big_block_size);
   printf("\n");
 
-  tran_low_t *tf_block = (tran_low_t*) calloc(block_square, sizeof(tran_low_t));
-  // TF merge 4 blocks (a big_block) into 1 block
+  // TF block (TF requires more bits for bigger transforms)
+  tran_high_t *tf_block = (tran_high_t*) calloc(block_square,
+		  sizeof(tran_high_t));
+  // TF block scaled
+  tran_low_t *tf_block_scaled = (tran_low_t*) calloc(block_square,
+		  sizeof(tran_low_t));
+  
+  
   od_tf_up_hv_lp(tf_block, block_size, dct_big_block, big_block_size,
 		      block_size, block_size, block_size);
+
+
+  // Subsampling requires scaling
+  for (by = 0; by < block_size; by++) {
+    for (bx = 0; bx < block_size; bx++) {
+      tf_block_scaled[by * block_size + bx] = tf_block[by * block_size + bx] >> 1;
+    }
+  }
+
   printf("TF\n");
   print_block(tf_block, block_size);
   printf("\n");

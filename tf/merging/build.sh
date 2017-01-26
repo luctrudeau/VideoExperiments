@@ -2,12 +2,12 @@
 set -e
 
 DAALA=~/Workspace/daala
-AOM=~/Workspace/aom
+AOM=~/Workspace/aom-cfl
 
-gcc -g aom_tf.c $AOM/av1/common/cfl.c $AOM/aom_dsp/fwd_txfm.c $AOM/aom_dsp/inv_txfm.c ../../utils/luma2png.c $DAALA/tools/vidinput.c $DAALA/tools/y4m_input.c -I$DAALA/tools/ -I$AOM/build -I$AOM/ -I../../ -lpng -o aom_tf
+gcc -lubsan -fsanitize=undefined -g aom_tf.c $AOM/av1/common/cfl.c $AOM/aom_dsp/fwd_txfm.c $AOM/aom_dsp/inv_txfm.c ../../utils/luma2png.c $DAALA/tools/vidinput.c $DAALA/tools/y4m_input.c -I$DAALA/tools/ -I$AOM/build -I$AOM/ -I../../ -lpng -o aom_tf
 
 
-gcc -g daala_tf.c $DAALA/src/dct.c $DAALA/src/intra.c $DAALA/src/tf.c $DAALA/tools/vidinput.c $DAALA/tools/y4m_input.c ../../utils/luma2png.c -I$DAALA/tools/ -I/$DAALA/src -I$DAALA/ -I../../ -lpng -o daala_tf
+gcc -lubsan -fsanitize=undefined -g daala_tf.c $DAALA/src/dct.c $DAALA/src/intra.c $DAALA/src/tf.c $DAALA/tools/vidinput.c $DAALA/tools/y4m_input.c ../../utils/luma2png.c -I$DAALA/tools/ -I/$DAALA/src -I$DAALA/ -I../../ -lpng -o daala_tf
 
 ./aom_tf ~/Videos/owl.y4m 4
 convert -comment 'aom 4x4'  aom_tf_4.png  aom_tf_4.png
