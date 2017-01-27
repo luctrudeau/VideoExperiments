@@ -1,0 +1,13 @@
+#
+set key autotitle columnhead
+set datafile separator ","
+set title "Histogram of the error between DCT and Fast DCT 1"
+set style data histogram
+set terminal png size 800,400 enhanced font "Helvetica,20"
+set output 'hist.png'
+binwidth = 1
+binstart = 0
+set xtics norotate nomirror
+set xtics 1
+load 'hist.fct'
+plot 'error.csv' i 0 @hist ls 1
