@@ -19,6 +19,15 @@ using:
   * AV1's DC function (AOM\_fdctNxN\_1\_c)
   * The proposed Fast DCT for Flat Blocks.
 
+Perform the inverse transform on each transformed block and validate that the
+inversed transformed flat block is equivalent to the original flat block.
+
 ## Results
 
+While doing the experiment, we noticed a difference between the DC of
+AOM\_fdctNxN\_c and the DC of AOM\_fdctNxN\_1\_c. However, we don't see an
+change in the inverse transform.
 
+  ![DCT function error](https://github.com/luctrudeau/VideoExperiments/blob/master/dct/fastdc/sidebyside.png)
+
+Otherwise, there is no difference between the proposed method and AOM\_fdctNxN\_1\_c.
