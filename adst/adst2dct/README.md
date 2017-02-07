@@ -153,10 +153,29 @@ o0 => (x0 + x1) * cospi_16_64
           )
      + (x0 + 2 * x1 - x2 + x3) * sinpi_3_9) * cospi_16_64
 
+o1 => (-x2 * sinpi_1_9
+       + x0 * sinpi_2_9
+       - (x0 + x1 - x2 + x3) * sinpi_3_9
+       + x3 * sinpi_4_9) * cospi_24_64
+     +(-x2 * sinpi_1_9
+       - x0 * sinpi_2_9
+       + 2 * x1 * sinpi_3_9
+       - x3 * sinpi_4_9) * cos_pi_8_64
+
+
 o2 => (x0 - x1) * cospi_16_64
    => 2 * x0 * sinpi_1_9
      + 2 * x3 * sinpi_2_9
      - (x0 - x2 + x3) * sinpi_3_9
      + 2 * x2 * sinpi_4_9
+
+o3 => (-x2 * sinpi_1_9
+       - x0 * sinpi_2_9
+       + 2 * x1 * sinpi_3_9
+       - x3 * sinpi_4_9) * cospi_24_64
+     -(-x2 * sinpi_1_9
+       + x0 * sinpi_2_9
+       - (x0 + x1 - x2 + x3) * sinpi_3_9
+       + x3 * sinpi_4_9) * cospi_8_64
 
 ```
