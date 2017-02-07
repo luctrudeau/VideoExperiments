@@ -78,7 +78,7 @@ o3 = (tran_low_t)fdct_round_shift(temp);
 
 ## Combining the inverse ADST with the forward DCT
 
-Let's expand the a0, a1, a2 and a3 terms from the inverse ADST (_we will ignore
+**Step 1:** Let's expand the a0, a1, a2 and a3 terms from the inverse ADST (_we will ignore
 the wrapping and rounding for now_)
 
 
@@ -100,7 +100,7 @@ a3 => s0 + s1 - s3 => s0 + s3 + s5 + s1 - s4 - s6 - s2
      - x1 sinpi_3_9 + (x2 - x3) * sinpi_4_9
 ```
 
-Now, we insert the expanded version into the DCT
+**Step 2:** We insert the expanded version into the DCT
 
 ```
 x0 => a0 + a3
@@ -138,7 +138,7 @@ x3 => a0 - a3
      - x3 * sinpi_4_9
 ```
 
-We can perform some simplifications on stage 2
+**Step 3:** We can perform some simplifications on stage 2
 
 ```
 o0 => (x0 + x1) * cospi_16_64
