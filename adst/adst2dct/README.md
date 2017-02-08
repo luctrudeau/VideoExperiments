@@ -114,8 +114,7 @@ t1 => d0 - d1
 In both cases we managed to simplify s1.
 
 
-**Step 3:** Extracting common terms
-First, we rename t0 and t1 back to d0 and d1. Next, we extract common terms from d0, d1, d2 and d3
+**Step 3:** First, we rename t0 and t1 back to d0 and d1. Next, we extract common terms from d0, d1, d2 and d3
 
 ```
 
