@@ -153,36 +153,40 @@ void adst2dct(const tran_low_t *input, tran_low_t *output) {
   int x2 = input[2];
   int x3 = input[3];
 
-  int s2 = x1 * sinpi_3_9;
+  int s0 = sinpi_1_9 * x0;
+  int s1 = sinpi_2_9 * x0;
+  int s2 = sinpi_3_9 * x1;
+  int s3 = sinpi_4_9 * x2;
+  int s4 = sinpi_1_9 * x2;
+  int s5 = sinpi_2_9 * x3;
+  int s6 = sinpi_4_9 * x3;
+  int s7 = WRAPLOW(x0 - x2 + x3);
 
-  int t0 = (x0 - x2 + x3) * sinpi_3_9;
-  int t1 = -(x2 * sinpi_1_9) + (x0 * sinpi_2_9) - (x3 * sinpi_4_9);
-  int t2 = (x0 * sinpi_1_9) + (x3 * sinpi_2_9) + (x2 * sinpi_4_9);
-  int t3 = s2 + t0;
+  s0 = (s0 + s3 + s5) << 1;
+  s1 = s1 - s4 - s6;
+  s3 = s2;
+  s2 = sinpi_3_9 * s7;
 
-  int t4 = t1 + s2 - t0; //  s1 = a1 - a2
-  int t5 = -t1 + 2 * s2; //  s2 = a0 - a3
+  int t0 = s2 + s3;
 
+  int d0 = WRAPLOW(dct_const_round_shift(s0 + (s1 << 1) + t0)) >> 1;
+  int d1 = WRAPLOW(dct_const_round_shift(s0 - t0)) >> 1;
+  int d2 = WRAPLOW(dct_const_round_shift(s3 + s1 - s2)) >> 1;
+  int d3 = WRAPLOW(dct_const_round_shift((s3 << 1) - s1)) >> 1;
 
-  //========================================
-  //  int o0 = (a0 + a1 + a2 + a3) * cospi_16_64;
-  int o0 = (2 * (t1 + t2) + t3) * cospi_16_64;
+  int o0 = d0 * cospi_16_64;
 
-  //========================================
-  //  int o1 = (a1 - a2) * cospi_24_64 + (a0 - a3) * cospi_8_64;
-  int o1 = t4 * cospi_24_64 + t5 * cospi_8_64;
+  int o1 = d1 * cospi_16_64;
 
-  //========================================
-  int o2 = (2 * t2 - t3) * cospi_24_64;
+  int o2 = d2 * cospi_24_64 + d3 * cospi_8_64;
 
-  //========================================
-  //  int o3 = (a0 - a3) * cospi_24_64 - (a1 - a2) * cospi_8_64;
-  int o3 = t5 * cospi_24_64 - t4 * cospi_8_64;
+  int o3 = d3 * cospi_24_64 + d2 * -cospi_8_64;
 
-  output[0] = fdct_round_shift(o0 >> 6);
-  output[1] = fdct_round_shift(o1 >> 9);
-  output[2] = fdct_round_shift(o2 >> 8);
-  output[3] = fdct_round_shift(o3 >> 10);
+  // Apply Stage 3
+  output[0] = (tran_low_t)fdct_round_shift(o0);
+  output[1] = (tran_low_t)fdct_round_shift(o2);
+  output[2] = (tran_low_t)fdct_round_shift(o1);
+  output[3] = (tran_low_t)fdct_round_shift(o3);
 }
 
 // Utility functions for the experiment
