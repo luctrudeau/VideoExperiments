@@ -13,7 +13,7 @@ similar. They are both type-II DCTs, and given the following input
   * AV1's DCT produces: [368, 25, -60, -91]
   * Daala's DCT produces: [260, 17, -43, -63]
 
-## The first big difference
+## The First Big Difference
 
 The first big difference is when we perform the inverse DCT
 
@@ -24,7 +24,7 @@ Daala's DCT allows for a perfect reconstruction, while the AV1 reconstruction
 is scaled by a factor of 2. Notice that the odd values in AV1's
 coefficients [206, **397**, **209**, 230] will cause rounding error.
 
-## The hack
+## The Hack
 
 AV1 compensates for this with the following hack:
 
@@ -111,6 +111,8 @@ but that will be the subject of another experiment.
 Because we changed the pre-shift from 4 bits to 3 bits, the same change must be
 done after the post-shift after the inverse transform. By doing so, we can use
 Daala's DCT in AV1 without modifying the scalar quantizer.
+
+## An Example
 
 The following is a step by step breakdown of AV1's DCT and Daala's DCT for a 
 randomly generated set of pixels
