@@ -340,16 +340,13 @@ int main(int _argc,char **_argv) {
     127, 127, 127, 127,
     127, 127, 127, 127,
     127, 127, 127, 127};
-
+  print_block(flat, "Flat Block");
 
   fdct4x4(flat, aom_output, daala_output);
-
-  print_block(flat, "Flat Block");
   print_block(aom_output, "AOM 2D DCT");
   print_block(daala_output, "Daala 2D DCT");
 
   tran_low_t input[ROW_SIZE * ROW_SIZE] = {0};
-
 
   tran_low_t *in = input;
   rand_row(in);
