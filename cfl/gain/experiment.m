@@ -70,11 +70,14 @@ for y = 1:block_size:h-bm1
   end
 end
 
-subplot(3,1,1); imshow(uint8(y_img)); title('Luma');
-subplot(3,1,2); imshow(uint8(c_img)); title('Chroma');
-subplot(3,1,3); imshow(uint8(cfl)); title('CfL');
+cfl_err = 127 + (c_img - cfl);
+subplot(2,2,1); imshow(uint8(y_img)); title('Luma');
+subplot(2,2,2); imshow(uint8(c_img)); title('Chroma');
+subplot(2,2,3); imshow(uint8(cfl)); title('CfL');
+subplot(2,2,4); imshow(uint8(cfl_err)); title('Chroma - CfL');
 
 sse = sum((c_img(:) - cfl(:)).^2)
 psnr = 20 * log10(255) - 10 * log10(sse/(num_pix))
 
 imwrite(uint8(cfl), 'cfl.png');
+imwrite(uint8(cfl_err), 'cfl_err.png');
