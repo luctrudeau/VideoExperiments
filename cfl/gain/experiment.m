@@ -36,7 +36,7 @@ for y = 1:block_size:h-bm1
 
     % For Chroma, we use DC_PRED on both the decoder side
     % and the encoder side. For the purpose of this script,
-    % I will use the average over the entire block.  
+    % I will use the average over the entire block.
     beta = mean(bc(:));
 
     % Named L and C to refer to CfL paper.
@@ -58,13 +58,9 @@ for y = 1:block_size:h-bm1
     % Holy simplifications Batman!
     % Because sL == sC == 0, alpha as defined in eq.2
     % of https://people.xiph.org/~unlord/spie_cfl.pdf
-    % a = (N * sLC - sL * sC) / (M * sLL - sC.^2)
+    % a = (N * sLC - sL * sC) / (N * sLL - sL.^2)
     % simplifies to
     a = sLC / sLL;
-
-    % This will not be true for sC when we use beta = DC_PRED,
-    % so alpha will most likely be:
-    assert(a == sLC / (sLL - sC.^2))
 
     cfl(yRange, xRange) = uint8(round(L * a + beta));
   end

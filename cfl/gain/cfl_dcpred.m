@@ -54,8 +54,9 @@ for y = 1:block_size:h-bm1
     % sL = sum(L(:));
     assert(sum(L(:)) == 0);
     % This is also true for sC. However, when we use
-    % beta = DC_PRED, this will no longer old.
-    sC = sum(C(:));
+    % beta = DC_PRED, this will no longer holds. But,
+    % since sL == 0, sC simplifies out of the equation.
+    % sC = sum(C(:));
     %assert(sum(C(:)) == 0);
 
     sLL = sum(L(:).^2);
@@ -63,15 +64,12 @@ for y = 1:block_size:h-bm1
 
     % Because sL == 0, alpha as defined in eq.2
     % of https://people.xiph.org/~unlord/spie_cfl.pdf
-    % a = (N * sLC - sL * sC) / (N * sLL - sC.^2)
-    % the denominator does not simplify
-    den = N * sLL - sC.^2;
+    % a = (N * sLC - sL * sC) / (N * sLL - sL.^2)
+    % the denominator simplifies to
+    den = sLL;
     if den != 0
-      % the numerator should simplifies to
-      % a = (N * sLC) / den;
-      % however, this works:
-      a = (sLC) / den;
-      % but I'm not sure why we should not use N??
+      % the numerator simplifies to
+      a = sLC / den;
       as(k) = a;
       k = k + 1;
     else

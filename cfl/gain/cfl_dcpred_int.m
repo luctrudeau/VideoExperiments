@@ -7,8 +7,11 @@ bm1 = block_size - 1;
 % Same N as in https://people.xiph.org/~unlord/spie_cfl.pdf
 N = block_size * block_size;
 
-%im = imread('~/Videos/Hamilton.jpg');
-im = imread('../../videos/lizard.jpg');
+im = imread('~/Videos/Hamilton.jpg');
+%im = imread('~/Videos/Meerkat.jpg');
+%im = imread('~/Videos/Owl.jpg');
+%im = imread('~/Videos/gamegear.jpg');
+%im = imread('../../videos/lizard.jpg');
 [h w ~] = size(im);
 num_pix = h * w;
 yuv = rgb2ycbcr(im);
@@ -50,12 +53,14 @@ for y = 1:block_size:h-bm1
     C = bc - beta;
 
     % Sum of Luma == 0, because L is zero mean
-    % sL = sum(L(:));
+    %sL = sum(L(:));
     % This does not old anymore because of rounding
     % assert(sum(L(:)) == 0);
-    % This is also true for sC. However, when we use
-    % beta = DC_PRED, this will no longer old.
-    sC = sum(C(:));
+
+    % This is also true for sC. However, because we use
+    % beta=DC_PRED, this will no longer old. However, we
+    % will show that sC simplifies out.
+    %sC = sum(C(:));
     %assert(sum(C(:)) == 0);
 
     sLL = sum(L(:).^2);
@@ -63,29 +68,35 @@ for y = 1:block_size:h-bm1
 
     % Because sL == 0, alpha as defined in eq.2
     % of https://people.xiph.org/~unlord/spie_cfl.pdf
-    % a = (N * sLC - sL * sC) / (N * sLL - sC.^2)
-    % the denominator does not simplify
-    den = N * sLL - sC.^2;
+    % a = (N * sLC - sL * sC) / (N * sLL - sL.^2)
+    % the denominator is
+    % den = (N * sLL - sL.^2);
+    % it simplifies to
+    den = sLL;
     if den != 0
-      % the numerator should simplifies to
-      % a = (N * sLC) / den;
-      % however, this works:
-      a = (sLC) / den;
-      % but I'm not sure why we should not use N??
+      % the numerator is
+      %a = (N * sLC - sL * sC) / den;
+      % it simplifies to
+      a = sLC / den;
+
       as(k) = a;
       k = k + 1;
     else
-      % How are we suppose to deal with / 0 ?
-      printf('[%d / 0]NoOOOOO!!!!\n', sLC)
       a = 0;
     end
+
+    % Question: Should we take the rounding error into
+    % consideration?
+    % Answer: Ignoring the rounding error gives better
+    % images and it would appear the alpha is also more
+    % robust to the error resulting from using DC_PRED as
+    % beta.
 
     cfl(yRange, xRange) = uint8(round(L * a + beta));
     left = x + bm1;
   end
   above = y + bm1;
 end
-max(cfl(:))
 
 cfl_err = 127 + (c_img - cfl);
 subplot(2,2,1:2); plot(as, 'x'); title('Alpha');
