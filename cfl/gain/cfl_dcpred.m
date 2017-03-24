@@ -67,7 +67,7 @@ for y = 1:block_size:h-bm1
     % a = (N * sLC - sL * sC) / (N * sLL - sL.^2)
     % the denominator simplifies to
     den = sLL;
-    if den != 0
+    if den ~= 0
       % the numerator simplifies to
       a = sLC / den;
       as(k) = a;

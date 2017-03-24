@@ -7,11 +7,11 @@ bm1 = block_size - 1;
 % Same N as in https://people.xiph.org/~unlord/spie_cfl.pdf
 N = block_size * block_size;
 
-im = imread('~/Videos/Hamilton.jpg');
+%im = imread('~/Videos/Hamilton.jpg');
 %im = imread('~/Videos/Meerkat.jpg');
 %im = imread('~/Videos/Owl.jpg');
 %im = imread('~/Videos/gamegear.jpg');
-%im = imread('../../videos/lizard.jpg');
+im = imread('../../videos/lizard.jpg');
 [h w ~] = size(im);
 num_pix = h * w;
 yuv = rgb2ycbcr(im);
