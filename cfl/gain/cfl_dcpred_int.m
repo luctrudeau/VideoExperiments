@@ -1,17 +1,12 @@
 % tabula rasa
-clc; clear; close all
+function psnr = cfl_dcpred_int(fileName, block_size)
 
-% Tested with 4, 8, 16 and 32
-block_size = 8;
 bm1 = block_size - 1;
 % Same N as in https://people.xiph.org/~unlord/spie_cfl.pdf
 N = block_size * block_size;
 
-%im = imread('~/Videos/Hamilton.jpg');
-%im = imread('~/Videos/Meerkat.jpg');
-%im = imread('~/Videos/Owl.jpg');
-%im = imread('~/Videos/gamegear.jpg');
-im = imread('../../videos/lizard.jpg');
+im = imread(fileName);
+
 [h w ~] = size(im);
 num_pix = h * w;
 yuv = rgb2ycbcr(im);
@@ -101,13 +96,14 @@ for y = 1:block_size:h-bm1
 end
 
 cfl_err = 127 + (c_img - cfl);
-subplot(2,2,1:2); plot(as, 'x'); title('Alpha');
-subplot(2,2,3); imshow(cfl); title('CfL');
-subplot(2,2,4); imshow(cfl_err); title('Chroma - CfL');
+%subplot(2,2,1:2); plot(as, 'x'); title('Alpha');
+%subplot(2,2,3); imshow(cfl); title('CfL');
+%subplot(2,2,4); imshow(cfl_err); title('Chroma - CfL');
 
-imwrite(cfl, 'dcpred_cfl_int.png');
-imwrite(cfl_err, 'dcpred_cfl_err_int.png');
+[dir, name, ext] = fileparts(fileName);
+imwrite(cfl, [name '.png']);
+imwrite(cfl_err, [name 'err.png']);
 
 sse = sum((c_img(:) - cfl(:)).^2)
 psnr = 20 * log10(255) - 10 * log10(sse/(num_pix))
-
+end
